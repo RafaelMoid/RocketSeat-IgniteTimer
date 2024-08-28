@@ -18,13 +18,24 @@ const  newCycleFormValidationSchema = zod.object({
   minutesAmount: zod.number().min(5, 'O cliclo precisa ser de no mínimo 5 minutos.').max(1000, 'O cliclo precisa ter de no máximo 1000 minutos.'),
 })
 
+// interface NewCycleFormData {
+//   task: string;
+//   minutesAmount: number;
+// }
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
 export function Home() {
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
   });
 
-  function handleCreateNewCycle(data: any) {
-    // console.log(data);
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    console.log(data);
   }
 
   const task = watch('task')
