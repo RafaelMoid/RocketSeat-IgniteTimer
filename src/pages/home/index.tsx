@@ -22,7 +22,7 @@ export function Home() {
           />
 
           <label htmlFor="minutsAmount">durante</label>
-          <MinutsAmountInput id="minutsAmount" type="number" placeholder="00" />
+          <MinutsAmountInput id="minutsAmount" type="number" placeholder="00" step={5}/>
 
           <span>minutos.</span>
         </FormContainer>
