@@ -50,11 +50,11 @@ const BaseInput = styled.input`
 `;
 
 export const TaskInput = styled(BaseInput)`
-    flex: 1;
+  flex: 1;
 
-    &::-webkit-calendar-picker-indicator {
-        display: none !important;
-    }
+  &::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
 `;
 
 export const MinutsAmountInput = styled(BaseInput)`
@@ -86,7 +86,7 @@ export const Separator = styled.div`
   justify-content: center;
 `;
 
-export const StartCountdownButton = styled.button`
+export const BaseCountdownButton = styled.button`
   width: 100%;
   border: 0;
   border-radius: 8px;
@@ -100,7 +100,9 @@ export const StartCountdownButton = styled.button`
   font-weight: bold;
 
   cursor: pointer;
+`;
 
+export const StartCountdownButton = styled(BaseCountdownButton)`
   background-color: ${(props) => props.theme["green-500"]};
   color: ${(props) => props.theme["gray-100"]};
 
@@ -111,5 +113,20 @@ export const StartCountdownButton = styled.button`
 
   &:not(:disabled):hover {
     background-color: ${(props) => props.theme["green-700"]};
+  }
+`;
+
+export const StopCountdownButton = styled(BaseCountdownButton)`
+  background-color: ${(props) => props.theme["red-500"]};
+  color: ${(props) => props.theme["gray-100"]};
+  border-color: ${(props) => props.theme["red-500"]};
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    background-color: ${(props) => props.theme["red-700"]};
   }
 `;
