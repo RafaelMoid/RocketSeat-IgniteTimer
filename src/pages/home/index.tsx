@@ -16,7 +16,7 @@ import { useState } from "react";
 
 const  newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informa a tarefa'),
-  minutesAmount: zod.number().min(5, 'O cliclo precisa ser de no mínimo 5 minutos.').max(1000, 'O cliclo precisa ter de no máximo 1000 minutos.'),
+  minutesAmount: zod.number().min(5, 'O cliclo precisa ser de no mínimo 5 minutos.').max(90, 'O cliclo precisa ter de no máximo 90 minutos.'),
 })
 
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
