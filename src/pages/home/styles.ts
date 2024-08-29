@@ -120,10 +120,16 @@ export const StopCountdownButton = styled(BaseCountdownButton)`
   background-color: ${(props) => props.theme["red-500"]};
   color: ${(props) => props.theme["gray-100"]};
   border-color: ${(props) => props.theme["red-500"]};
+  box-shadow: 0 0 0 2px ${(props) => props.theme["red-500"]};
 
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+    box-shadow: inherit;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px ${(props) => props.theme["red-500"]};
   }
 
   &:not(:disabled):hover {
