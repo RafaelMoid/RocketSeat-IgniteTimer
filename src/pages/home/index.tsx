@@ -20,7 +20,7 @@ const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, "Informa a tarefa"),
   minutesAmount: zod
     .number()
-    .min(5, "O cliclo precisa ser de no mínimo 5 minutos.")
+    .min(1, "O cliclo precisa ser de no mínimo 5 minutos.")
     .max(90, "O cliclo precisa ter de no máximo 90 minutos."),
 });
 
@@ -32,6 +32,7 @@ interface Cycle {
   minutesAmount: number;
   startDate: Date;
   interruptedDate?: Date;
+  finishedDate?: Date;
 }
 
 export function Home() {
@@ -49,21 +50,42 @@ export function Home() {
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
+
   useEffect(() => {
     let interval: number;
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate)
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate
         );
+
+        if (secondsDifference >= totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            })
+          );
+
+          setAmountSecondsPassed(totalSeconds);
+          clearInterval(interval);
+          
+        } else {
+          setAmountSecondsPassed(secondsDifference);
+        }
       }, 1000);
     }
 
     return () => {
       clearInterval(interval);
     };
-  }, [activeCycle]);
+  }, [activeCycle, totalSeconds, activeCycleId]);
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const newCycle: Cycle = {
@@ -81,21 +103,20 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         if (cycle.id === activeCycleId) {
-          return { ...cycle, interruptedDate: new Date() } 
+          return { ...cycle, interruptedDate: new Date() };
         } else {
-            return cycle
+          return cycle;
         }
-      }),
-    )
-    
-    setActiveCycleId(null)
+      })
+    );
+
+    setActiveCycleId(null);
   }
 
   // Time calc block
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0;
   const currentSecond = activeCycle ? totalSeconds - amountSecondsPassed : 0;
   const minutesAmount = Math.floor(currentSecond / 60);
   const secondsAmount = currentSecond % 60;
@@ -109,7 +130,7 @@ export function Home() {
   // Countdown no Favicon do Navegador
   useEffect(() => {
     if (activeCycle) {
-      document.title = `Contador do Varela - ${minutes}:${seconds}`;
+      document.title = `Restam: ${minutes}:${seconds}`;
     }
   }, [minutes, seconds, activeCycle]);
   // Countdown no Favicon do Navegador
@@ -127,7 +148,7 @@ export function Home() {
             id="task"
             list="task-suggestions"
             type="text"
-            disabled = {!!activeCycle}
+            disabled={!!activeCycle}
             {...register("task")}
           />
 
@@ -140,9 +161,9 @@ export function Home() {
             id="minutsAmount"
             type="number"
             placeholder="00"
-            step={5}
+            step={1}
             max={1000}
-            disabled = {!!activeCycle}
+            disabled={!!activeCycle}
             {...register("minutesAmount", { valueAsNumber: true })}
           />
 
